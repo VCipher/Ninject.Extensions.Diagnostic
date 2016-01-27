@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Ninject.Extensions.Diagnostic
+namespace Ninject.Extensions.Diagnostic.Profiling
 {
     public interface IProfiler
     {

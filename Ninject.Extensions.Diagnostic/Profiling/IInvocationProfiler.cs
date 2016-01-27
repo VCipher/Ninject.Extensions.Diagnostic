@@ -1,6 +1,6 @@
 ﻿using Ninject.Extensions.Interception;
 
-namespace Ninject.Extensions.Diagnostic
+namespace Ninject.Extensions.Diagnostic.Profiling
 {
     public interface IInvocationProfiler : IProfiler
     {

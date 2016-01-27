@@ -57,15 +57,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="IInvocationProfiler.cs" />
-    <Compile Include="IProfiler.cs" />
-    <Compile Include="ProfilingContext.cs" />
-    <Compile Include="ProfileAttribute.cs" />
-    <Compile Include="Profiler.cs" />
-    <Compile Include="ProfilerInterceptor.cs" />
+    <Compile Include="Common\ExtensionMethods.cs" />
+    <Compile Include="Profiling\IInvocationProfiler.cs" />
+    <Compile Include="Profiling\IProfiler.cs" />
+    <Compile Include="Profiling\ProfilingContext.cs" />
+    <Compile Include="Profiling\ProfileAttribute.cs" />
+    <Compile Include="Profiling\Profiler.cs" />
+    <Compile Include="Profiling\ProfileInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Snapshot.cs" />
+    <Compile Include="Profiling\Snapshot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Ninject.Extensions.Diagnostic
+namespace Ninject.Extensions.Diagnostic.Common
 {
     internal static class ExtensionMethods
     {

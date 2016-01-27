@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Ninject.Extensions.Diagnostic
+namespace Ninject.Extensions.Diagnostic.Profiling
 {
     public class ProfilingContext
     {

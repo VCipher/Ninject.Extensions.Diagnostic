@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Ninject.Extensions.Diagnostic.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Ninject.Extensions.Diagnostic
+namespace Ninject.Extensions.Diagnostic.Profiling
 {
     [DataContract]
     [Serializable]

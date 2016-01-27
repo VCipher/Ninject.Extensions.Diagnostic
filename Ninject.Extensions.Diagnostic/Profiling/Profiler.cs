@@ -1,10 +1,11 @@
-﻿using Ninject.Extensions.Interception;
+﻿using Ninject.Extensions.Diagnostic.Common;
+using Ninject.Extensions.Interception;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Ninject.Extensions.Diagnostic
+namespace Ninject.Extensions.Diagnostic.Profiling
 {
     public class Profiler : IProfiler, IInvocationProfiler
     {

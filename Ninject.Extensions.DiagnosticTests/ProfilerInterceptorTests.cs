@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Ninject.Extensions.Diagnostic.Profiling;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Modules;
 using System.Threading;
@@ -50,12 +51,12 @@ namespace Ninject.Extensions.Diagnostic.Tests
             {
                 // bindings
                 kernel.Bind<ITestItem>().To<TestItem>();
-                kernel.Bind<IProfiler, IInvocationProfiler>().To<Profiler>();
-                kernel.Bind<ProfilerInterceptor>().ToSelf().InSingletonScope();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
 
                 // initialize
                 var item = kernel.Get<ITestItem>();
-                var inteceptor = kernel.Get<ProfilerInterceptor>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
 
                 // asserting
                 item.Action();
@@ -70,12 +71,12 @@ namespace Ninject.Extensions.Diagnostic.Tests
             {
                 // bindings
                 kernel.Bind<ITestItem>().To<TestItem>();
-                kernel.Bind<IProfiler, IInvocationProfiler>().To<Profiler>();
-                kernel.Bind<ProfilerInterceptor>().ToSelf().InSingletonScope();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
 
                 // initialize
                 var item = kernel.Get<ITestItem>();
-                var inteceptor = kernel.Get<ProfilerInterceptor>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
 
                 // asserting
                 Assert.AreEqual(10, item.Function());
@@ -90,12 +91,12 @@ namespace Ninject.Extensions.Diagnostic.Tests
             {
                 // bindings
                 kernel.Bind<ITestItem>().To<TestItem>();
-                kernel.Bind<IProfiler, IInvocationProfiler>().To<Profiler>();
-                kernel.Bind<ProfilerInterceptor>().ToSelf().InSingletonScope();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
 
                 // initialize
                 var item = kernel.Get<ITestItem>();
-                var inteceptor = kernel.Get<ProfilerInterceptor>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
 
                 // asserting
                 item.AsyncAction().Wait();
@@ -110,12 +111,12 @@ namespace Ninject.Extensions.Diagnostic.Tests
             {
                 // bindings
                 kernel.Bind<ITestItem>().To<TestItem>();
-                kernel.Bind<IProfiler, IInvocationProfiler>().To<Profiler>();
-                kernel.Bind<ProfilerInterceptor>().ToSelf().InSingletonScope();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
 
                 // initialize
                 var item = kernel.Get<ITestItem>();
-                var inteceptor = kernel.Get<ProfilerInterceptor>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
 
                 // asserting
                 Assert.AreEqual(10, item.AsyncFunction().Result);

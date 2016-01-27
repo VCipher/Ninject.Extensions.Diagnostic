@@ -2,16 +2,16 @@
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Ninject.Extensions.Diagnostic
+namespace Ninject.Extensions.Diagnostic.Profiling
 {
-    public class ProfilerInterceptor : IInterceptor
+    public class ProfileInterceptor : IInterceptor
     {
-        private readonly static MethodInfo startTaskMethodInfo = typeof(ProfilerInterceptor)
+        private readonly static MethodInfo startTaskMethodInfo = typeof(ProfileInterceptor)
             .GetMethod(nameof(InterceptTaskWithResult), BindingFlags.Instance | BindingFlags.NonPublic);
         
         public IInvocationProfiler Profiler { get; set; }
         
-        public ProfilerInterceptor(IInvocationProfiler profiler)
+        public ProfileInterceptor(IInvocationProfiler profiler)
         {
             Profiler = profiler;
         }
