@@ -23,29 +23,29 @@ namespace Ninject.Extensions.Diagnostic.Tests
         {
             public void Action()
             {
-                Thread.Sleep(50);
+                Thread.Sleep(200);
             }
 
             public async Task AsyncAction()
             {
-                await Task.Delay(1000);
+                await Task.Delay(200);
             }
 
             public async Task<int> AsyncFunction()
             {
-                await Task.Delay(1000);
+                await Task.Delay(200);
                 return 10;
             }
 
             public int Function()
             {
-                Thread.Sleep(50);
+                Thread.Sleep(200);
                 return 10;
             }
         }
         
         [TestMethod]
-        public void DirectSetupTest_Action()
+        public void ActionTest()
         {
             using (var kernel = new StandardKernel())
             {
@@ -65,7 +65,7 @@ namespace Ninject.Extensions.Diagnostic.Tests
         }
 
         [TestMethod]
-        public void DirectSetupTest_Function()
+        public void FunctionTest()
         {
             using (var kernel = new StandardKernel())
             {
@@ -85,7 +85,7 @@ namespace Ninject.Extensions.Diagnostic.Tests
         }
 
         [TestMethod]
-        public void DirectSetupTest_AsyncAction()
+        public void AsyncActionTest()
         {
             using (var kernel = new StandardKernel())
             {
@@ -105,7 +105,30 @@ namespace Ninject.Extensions.Diagnostic.Tests
         }
 
         [TestMethod]
-        public void DirectSetupTest_AsyncFunction()
+        public void AsyncActionTest_Await()
+        {
+            using (var kernel = new StandardKernel())
+            {
+                // bindings
+                kernel.Bind<ITestItem>().To<TestItem>();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
+
+                // initialize
+                var item = kernel.Get<ITestItem>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
+
+                // asserting
+                Task.Run(async () =>
+                {
+                    await item.AsyncAction();
+                    Assert.AreEqual(1, inteceptor.Profiler.Snapshots.Count);
+                }).Wait();
+            }
+        }
+
+        [TestMethod]
+        public void AsyncFunctionTest()
         {
             using (var kernel = new StandardKernel())
             {
@@ -121,6 +144,31 @@ namespace Ninject.Extensions.Diagnostic.Tests
                 // asserting
                 Assert.AreEqual(10, item.AsyncFunction().Result);
                 Assert.AreEqual(1, inteceptor.Profiler.Snapshots.Count);
+            }
+        }
+
+        [TestMethod]
+        public void AsyncFunctionTest_Await()
+        {
+            using (var kernel = new StandardKernel())
+            {
+                // bindings
+                kernel.Bind<ITestItem>().To<TestItem>();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
+
+                // initialize
+                var item = kernel.Get<ITestItem>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
+
+                // asserting
+                Task.Run(async () => 
+                {
+                    var res = await item.AsyncFunction();
+
+                    Assert.AreEqual(10, res);
+                    Assert.AreEqual(1, inteceptor.Profiler.Snapshots.Count);
+                }).Wait();                
             }
         }
     }
