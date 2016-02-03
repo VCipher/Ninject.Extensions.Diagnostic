@@ -2,6 +2,7 @@
 using Ninject.Extensions.Diagnostic.Profiling;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Modules;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,7 +44,33 @@ namespace Ninject.Extensions.Diagnostic.Tests
                 return 10;
             }
         }
-        
+
+        //[Profile]
+        public class FailItem : ITestItem
+        {
+            public void Action()
+            {
+                throw new NotImplementedException();
+            }
+
+            public async Task AsyncAction()
+            {
+                await Task.Delay(10);
+                throw new NotImplementedException();
+            }
+
+            public async Task<int> AsyncFunction()
+            {
+                await Task.Delay(10);
+                throw new NotImplementedException();
+            }
+
+            public int Function()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         [TestMethod]
         public void ActionTest()
         {
@@ -168,7 +195,91 @@ namespace Ninject.Extensions.Diagnostic.Tests
 
                     Assert.AreEqual(10, res);
                     Assert.AreEqual(1, inteceptor.Profiler.Snapshots.Count);
-                }).Wait();                
+                }).Wait();
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void ActionTest_Exception()
+        {
+            using (var kernel = new StandardKernel())
+            {
+                // bindings
+                kernel.Bind<ITestItem>().To<FailItem>();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
+
+                // initialize
+                var item = kernel.Get<ITestItem>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
+
+                // asserting
+                item.Action();
+                Assert.Fail("Exception is not rised");
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void FunctionTest_Exception()
+        {
+            using (var kernel = new StandardKernel())
+            {
+                // bindings
+                kernel.Bind<ITestItem>().To<FailItem>();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
+
+                // initialize
+                var item = kernel.Get<ITestItem>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
+
+                // asserting
+                var res = item.Function();                
+                Assert.Fail("Exception is not rised");
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AggregateException))]
+        public void AsyncActionTest_Exception()
+        {
+            using (var kernel = new StandardKernel())
+            {
+                // bindings
+                kernel.Bind<ITestItem>().To<FailItem>();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
+
+                // initialize
+                var item = kernel.Get<ITestItem>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
+
+                // asserting
+                item.AsyncAction().Wait();
+                Assert.Fail("Exception is not rised");
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AggregateException))]
+        public void AsyncFunctionTest_Exception()
+        {
+            using (var kernel = new StandardKernel())
+            {
+                // bindings
+                kernel.Bind<ITestItem>().To<FailItem>();
+                kernel.Bind<IInvocationProfiler>().To<Profiler>();
+                kernel.Bind<ProfileInterceptor>().ToSelf().InSingletonScope();
+
+                // initialize
+                var item = kernel.Get<ITestItem>();
+                var inteceptor = kernel.Get<ProfileInterceptor>();
+
+                // asserting
+                var res = item.AsyncFunction().Result;
+                Assert.Fail("Exception is not rised");
             }
         }
     }
