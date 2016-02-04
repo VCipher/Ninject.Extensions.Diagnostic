@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace Ninject.Extensions.Diagnostic.Common
@@ -31,56 +29,32 @@ namespace Ninject.Extensions.Diagnostic.Common
         }
 
         /// <summary>
-        /// Full object clone
+        /// Returns whether the enumerable is empty
         /// </summary>
-        /// <typeparam name="T">Type of cloning object</typeparam>
-        /// <param name="source">Source object</param>
-        /// <returns></returns>
-        public static T DeepClone<T>(this T source)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(stream, source);
-                stream.Position = 0;
-                return (T)formatter.Deserialize(stream);
-            }
-        }
-
-        /// <summary>
-        /// Возвращает пусто ли перечисление
-        /// </summary>
-        /// <typeparam name="TSource">Тип элементов перечисления source.</typeparam>
-        /// <param name="source">Объект System.Collections.Generic.IEnumerable`1, проверяемый на отсутсвие элементов.</param>
-        /// <returns>
-        /// true, если исходная последовательность не содержит какие-либо элементы, 
-        /// в противном случае — false.
-        /// </returns>
+        /// <typeparam name="TSource">Type of enumerable elements</typeparam>
+        /// <param name="source">Object of type System.Collections.Generic.IEnumerable`1, is checked for the absence of the elements</param>
+        /// <returns>true, if source enumerable is empty or null, otherwise — false</returns>
         public static bool IsEmpty<TSource>(this IEnumerable<TSource> source)
         {
             return source == null || !source.Any();
         }
 
         /// <summary>
-        /// Возвращает отсутствует ли в перечислении значение, удовлетворяющее данному предикату
+        /// Returns whether there is no value in the enumerable that satisfies a predicate
         /// </summary>
-        /// <typeparam name="TSource">Тип элементов перечисления source.</typeparam>
-        /// <param name="source">Объект System.Collections.Generic.IEnumerable`1, проверяемый на отсутсвие элементов.</param>
-        /// <returns>
-        /// true, если исходная последовательность не содержит никаких элементов, 
-        /// проходящих проверку, определяемую указанным предикатом;
-        /// в противном случае — false.
-        /// </returns>
+        /// <typeparam name="TSource">Type of enumerable elements</typeparam>
+        /// <param name="source">Object of type System.Collections.Generic.IEnumerable`1, is checked for the absence of the elements</param>
+        /// <returns>true, if source enumerable is empty or null, or does not contains any elements that satisfies a predicate, otherwise — false</returns>
         public static bool IsEmpty<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
             return source == null || !source.Any(predicate);
         }
 
         /// <summary>
-        /// Возвращает пустое перечисление если исходное перечисление равно null
+        /// Returns empty enumerable if source enumerable is null
         /// </summary>
-        /// <typeparam name="TSource">Тип элементов перечисления source</typeparam>
-        /// <param name="source">Объект System.Collections.Generic.IEnumerable`1, проверяемый на null</param>
+        /// <typeparam name="TSource">Type of enumerable elements</typeparam>
+        /// <param name="source">Object of type System.Collections.Generic.IEnumerable`1, is checked for null</param>
         /// <returns></returns>
         public static IEnumerable<TSource> EmptyIfNull<TSource>(this IEnumerable<TSource> source)
         {
@@ -88,50 +62,11 @@ namespace Ninject.Extensions.Diagnostic.Common
         }
 
         /// <summary>
-        /// Пытается произвести отображение множества IEnumerable<TSource> во множество IEnumerable<TResult>
-        /// при помощи функтора selector. Если на каком-либо этапе произойдет Exception, то этот этап просто пропускается
+        /// Returns whether there is value the only element in the enumerable that equals passed element
         /// </summary>
-        /// <typeparam name="TSource">Тип данных исходного множества</typeparam>
-        /// <typeparam name="TResult">Тип данных результирующего множества</typeparam>
-        /// <param name="source">Исходное множество</param>
-        /// <param name="selector">Результирующее множество</param>
-        /// <returns></returns>
-        public static IEnumerable<TResult> TrySelect<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
-        {
-            if (source == null) yield break;
-            if (selector == null) yield break;
-
-            var enumerator = source.GetEnumerator();
-
-            while (true)
-            {
-                TResult ret = default(TResult);
-                try
-                {
-                    // если исходное множество закончилось,
-                    // заканчиваем перебор
-                    if (!enumerator.MoveNext())
-                        break;
-
-                    ret = selector(enumerator.Current);
-                }
-                catch
-                {
-                    // продолжаем итерировать по исходному множеству,
-                    // пропуская ошибочный этап
-                    continue;
-                }
-
-                yield return ret;
-            }
-        }
-
-        /// <summary>
-        /// Проверяет, содержит ли перечисление единственный элемент, равный данному
-        /// </summary>
-        /// <typeparam name="TSource">Тип элементов перечисления source.</typeparam>
-        /// <param name="source">Объект System.Collections.Generic.IEnumerable`1, проверяемый на единственность элемента.</param>
-        /// <param name="element">Элемент последовательности ожидаемый в перечислении</param>
+        /// <typeparam name="TSource">Type of enumerable elements</typeparam>
+        /// <param name="source">Object of type System.Collections.Generic.IEnumerable`1, is checked for the uniqueness of the element</param>
+        /// <param name="element">Element expected in the enumerable</param>
         /// <returns></returns>
         public static bool HasOnly<TSource>(this IEnumerable<TSource> source, TSource element)
         {
@@ -150,12 +85,12 @@ namespace Ninject.Extensions.Diagnostic.Common
         }
 
         /// <summary>
-        /// Если исходный объект равен null возвращает default(TSource), иначе резельтат функции
+        /// Returns default(TSourse) if passed object is null, otherwise returns result of passed function execution 
         /// </summary>
-        /// <typeparam name="TSource">тип исходного объекта</typeparam>
-        /// <typeparam name="TResult">тип возвращаемого объекта</typeparam>
-        /// <param name="source">исходный объект</param>
-        /// <param name="func">функция, возвращающая объект типа TResult</param>
+        /// <typeparam name="TSource">Passed object type</typeparam>
+        /// <typeparam name="TResult">Return object type</typeparam>
+        /// <param name="source">Passed object</param>
+        /// <param name="func">Function that returns object of type TResult</param>
         /// <returns></returns>
         public static TResult With<TSource, TResult>(this TSource source, Func<TSource, TResult> func)
         {
@@ -166,11 +101,11 @@ namespace Ninject.Extensions.Diagnostic.Common
         }
 
         /// <summary>
-        /// Если исходный объект равен null то ничего не делает, иначе исполняет тело метода
+        /// Do nothing if passed object is null, otherwise execute passed function
         /// </summary>
-        /// <typeparam name="TSource">тип исходного объекта</typeparam>
-        /// <param name="source">исходный объект</param>
-        /// <param name="func">функция на исполнение</param>
+        /// <typeparam name="TSource">Passed object type</typeparam>
+        /// <typeparam name="TResult">Return object type</typeparam>
+        /// <param name="func">Function for execution</param>
         /// <returns></returns>
         public static TSource Do<TSource>(this TSource source, Action<TSource> func)
         {
@@ -182,11 +117,11 @@ namespace Ninject.Extensions.Diagnostic.Common
         }
 
         /// <summary>
-        /// Соединяет массив с элементом
+        /// Concatenate array with element
         /// </summary>
-        /// <typeparam name="TSource">Тип элементов для соединения</typeparam>
-        /// <param name="source">Исходный массив</param>
-        /// <param name="element">Элемент для содинения</param>
+        /// <typeparam name="TSource">Array's elements type</typeparam>
+        /// <param name="source">Source array</param>
+        /// <param name="element">Element for concatenation</param>
         /// <returns></returns>
         public static TSource[] Concat<TSource>(this TSource[] source, TSource element)
         {

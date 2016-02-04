@@ -20,8 +20,8 @@ namespace Ninject.Extensions.Diagnostic.Profiling
         }
 
         /// <summary>
-        /// Исполняет переданный объект типа делегат, 
-        /// замеряя время выполнения и сохраняя переданные параметры
+        /// Executes passed object with delegate type, 
+        /// measuring execution time and storing the passed parameters.
         /// </summary>
         public void Measure(Action action, params object[] data)
         {
@@ -33,9 +33,11 @@ namespace Ninject.Extensions.Diagnostic.Profiling
         }
 
         /// <summary>
-        /// Исполняет переданный объект типа делегат, 
-        /// замеряя время выполнения и сохраняя переданные параметры
+        /// Executes passed object with delegate type, 
+        /// measuring execution time and storing the passed parameters.
         /// </summary>
+        /// <param name="action">Object with delegate type to execution</param>
+        /// <param name="data">Parameters of execution</param>
         public T Measure<T>(Func<T> action, params object[] data)
         {
             var sw = Stopwatch.StartNew();
@@ -48,9 +50,11 @@ namespace Ninject.Extensions.Diagnostic.Profiling
         }
 
         /// <summary>
-        /// Исполняет переданный объект типа делегат, 
-        /// замеряя время выполнения и сохраняя переданные параметры
+        /// Asynchronously executes passed object with delegate type,
+        /// measuring execution time and storing the passed parameters.
         /// </summary>
+        /// <param name="action">Object with delegate type to execution</param>
+        /// <param name="data">Parameters of execution</param>
         public async Task MeasureAsync(Func<Task> action, params object[] data)
         {
             var sw = Stopwatch.StartNew();
@@ -61,9 +65,11 @@ namespace Ninject.Extensions.Diagnostic.Profiling
         }
 
         /// <summary>
-        /// Исполняет переданный объект типа делегат, 
-        /// замеряя время выполнения и сохраняя переданные параметры
+        /// Asynchronously executes passed object with delegate type,
+        /// measuring execution time and storing the passed parameters.
         /// </summary>
+        /// <param name="action">Object with delegate type to execution</param>
+        /// <param name="data">Parameters of execution</param>
         public async Task<T> MeasureAsync<T>(Func<Task<T>> action, params object[] data)
         {
             var sw = Stopwatch.StartNew();

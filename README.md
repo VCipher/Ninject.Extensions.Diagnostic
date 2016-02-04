@@ -1,5 +1,5 @@
 # Ninject.Extensions.Diagnostic
-This Ninject extension allows to profile methods by simple appling attributes to them. This extension allows to profile both synchronous and asynchronous methods.
+This Ninject extension allows to profile methods by simple applying attributes to them. This extension allows to profile both synchronous and asynchronous methods.
 
 ## Getting Started
 Example (Profiling whole class):
