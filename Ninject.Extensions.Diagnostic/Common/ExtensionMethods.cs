@@ -4,16 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Ninject.Extensions.Diagnostic.Common
 {
     internal static class ExtensionMethods
     {
         /// <summary>
-        /// Преобразование исключения с его внутренними исключениями в строку
+        /// Convert exception with its inner exceptions into a string
         /// </summary>
-        /// <param name="ex"></param>
+        /// <param name="ex">exception to convertation</param>
         /// <returns></returns>
         public static string ToStringWithInnerExceptions(this Exception ex)
         {
@@ -32,17 +31,17 @@ namespace Ninject.Extensions.Diagnostic.Common
         }
 
         /// <summary>
-        /// Полное клонирование объекта
+        /// Full object clone
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="a"></param>
+        /// <typeparam name="T">Type of cloning object</typeparam>
+        /// <param name="source">Source object</param>
         /// <returns></returns>
-        public static T DeepClone<T>(this T a)
+        public static T DeepClone<T>(this T source)
         {
             using (MemoryStream stream = new MemoryStream())
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(stream, a);
+                formatter.Serialize(stream, source);
                 stream.Position = 0;
                 return (T)formatter.Deserialize(stream);
             }
@@ -149,43 +148,6 @@ namespace Ninject.Extensions.Diagnostic.Common
 
             return !enumerator.MoveNext();
         }
-
-        /// <summary>
-        /// Возвращает значение аттрибута xml-элемента
-        /// </summary>
-        /// <param name="element">xml-элемент с аттрибутами</param>
-        /// <param name="name">имя атрибута</param>
-        /// <returns>Числовое значение атрибута или null, если атрибута нет</returns>
-        public static int? GetAttributeInt(this XElement element, string name)
-        {
-            var attr = element.Attribute(name);
-            return attr != null ? int.Parse(attr.Value) : default(int?);
-        }
-
-        /// <summary>
-        /// Возвращает значение аттрибута xml-элемента
-        /// </summary>
-        /// <param name="element">xml-элемент с аттрибутами</param>
-        /// <param name="name">имя атрибута</param>
-        /// <returns>Строковое значение атрибута или null, если атрибута нет</returns>
-        public static string GetAttribute(this XElement element, string name)
-        {
-            var attr = element.Attribute(name);
-            return attr != null ? attr.Value : null;
-        }
-
-        /// <summary>
-        /// Возвращает обрезанную строку со временным промежутком
-        /// </summary>
-        /// <param name="span">Временной промежуток</param>
-        /// <returns></returns>
-        public static string ToTruncatedString(this TimeSpan span)
-        {
-            return string.Format("{0:00}:{1:00}:{2:00}.{3:000}",
-                  span.Hours, span.Minutes,
-                  span.Seconds, span.Milliseconds);
-        }
-
 
         /// <summary>
         /// Если исходный объект равен null возвращает default(TSource), иначе резельтат функции

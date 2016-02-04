@@ -1,6 +1,7 @@
 ﻿using Ninject.Extensions.Diagnostic.Common;
 using Ninject.Extensions.Interception;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -9,13 +10,13 @@ namespace Ninject.Extensions.Diagnostic.Profiling
 {
     public class Profiler : IProfiler, IInvocationProfiler
     {
-        private readonly List<Snapshot> _snapshots;
+        private readonly ConcurrentBag<Snapshot> _snapshots;
 
-        public IReadOnlyCollection<Snapshot> Snapshots { get { return _snapshots; } }        
+        public IEnumerable<Snapshot> Snapshots { get { return _snapshots; } }        
 
         public Profiler()
         {
-            _snapshots = new List<Snapshot>();
+            _snapshots = new ConcurrentBag<Snapshot>();
         }
 
         /// <summary>

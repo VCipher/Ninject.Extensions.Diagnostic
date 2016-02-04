@@ -6,7 +6,7 @@ namespace Ninject.Extensions.Diagnostic.Profiling
 {
     public interface IProfiler
     {
-        IReadOnlyCollection<Snapshot> Snapshots { get; }
+        IEnumerable<Snapshot> Snapshots { get; }
 
         void Measure(Action action, params object[] data);
         T Measure<T>(Func<T> action, params object[] data);
