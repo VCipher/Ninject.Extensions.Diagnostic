@@ -77,9 +77,12 @@ namespace Ninject.Extensions.Diagnostic.Profiling
 
         void IInvocationProfiler.BeginMeasure(ProfilingContext ctx, IInvocation invocation)
         {
+            string typeName = invocation.Request.Method.DeclaringType.FullName;
+            string methodName = invocation.Request.Method.Name;
+
             ctx.Timer = Stopwatch.StartNew();
             ctx.Data = new List<object>(invocation.Request.Arguments);
-            ctx.Data.Add(invocation.Request.Method.Name);
+            ctx.Data.Add($"{typeName}.{methodName}");
         }
 
         void IInvocationProfiler.EndMeasure(ProfilingContext ctx, IInvocation invocation)
