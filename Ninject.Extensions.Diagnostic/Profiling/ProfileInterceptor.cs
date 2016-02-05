@@ -51,11 +51,20 @@ namespace Ninject.Extensions.Diagnostic.Profiling
             invocation.ReturnValue = Task.Run(() => BeforeInvoke(ctx, invocation))
                 .ContinueWith(t =>
                 {
+                    if (t.Exception != null)
+                        throw t.Exception;
+
                     invocationClone.Proceed();
                     return invocationClone.ReturnValue as Task;
                 })
                 .Unwrap()
-                .ContinueWith(t => AfterInvoke(ctx, invocation));
+                .ContinueWith(t =>
+                {
+                    if (t.Exception != null)
+                        throw t.Exception;
+
+                    AfterInvoke(ctx, invocation);
+                });
         }
 
         private void InterceptTaskWithResult<TResult>(IInvocation invocation)
@@ -66,12 +75,18 @@ namespace Ninject.Extensions.Diagnostic.Profiling
             invocation.ReturnValue = Task.Run(() => BeforeInvoke(ctx, invocation))
                 .ContinueWith(t =>
                 {
+                    if (t.Exception != null)
+                        throw t.Exception;
+
                     invocationClone.Proceed();
                     return invocationClone.ReturnValue as Task<TResult>;
                 })
                 .Unwrap()
                 .ContinueWith(t =>
                 {
+                    if (t.Exception != null)
+                        throw t.Exception;
+
                     invocationClone.ReturnValue = t.Result;
                     AfterInvoke(ctx, invocationClone);
                     return (TResult)invocationClone.ReturnValue;
